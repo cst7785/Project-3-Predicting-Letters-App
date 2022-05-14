@@ -42,4 +42,6 @@
 /* My CSS Here */
 .canvas {
   border: 1px solid black;
+  height: 30vh;
+  width: 20vw;
 }
