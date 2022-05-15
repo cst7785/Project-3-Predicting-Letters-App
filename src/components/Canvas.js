@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 
 let drawing = false;
 
@@ -7,17 +7,17 @@ let drawing = false;
 export default function Canvas() {
     
     const canvasRef = useRef(null);
-    let contextRef = useRef(null);
+    const [context, setContext] = useState("")
     useEffect(()=>{
         const canvas = canvasRef.current;
-        contextRef.current = canvas.getContext('2d');
-        drawSettings();
-        // contextRef.current.fillRect(20,20,50,50)
+        const context = canvas.getContext('2d')
+        setContext(context);
     },[])
-    
+        
     function drawSettings() {
-        contextRef.lineWidth = 5;
-        contextRef.lineCap = "round";
+        context.lineWidth = 5;
+        context.lineCap = "round";
+        setContext(context)
     }
     function startDrawing(e) {
         console.log("Start of drawing")
@@ -27,17 +27,26 @@ export default function Canvas() {
     function stopDrawing() {
         console.log("End of drawing")
         drawing = false;
-        contextRef.beginPath()
+        context.beginPath()
+        setContext(context)
     }
     function draw(e) {
         if (!drawing) return;
-        contextRef.current.lineTo(e.clientX, e.clientY);
-        contextRef.current.stroke();
-        contextRef.current.beginPath();
-        contextRef.moveTo(e.clientX, e.clientY)
+        // console.log(e.clientX)
+        // console.log(window.innerWidth)
+        // console.log(canvasRef.current.offsetWidth)
+        // let canvasX = canvasRef.current.offsetWidth*e.clientX/window.innerWidth
+        // let canvasY = canvasRef.current.offsetHeight*e.clientY/window.innerHeight
+        let canvasX = e.clientX - canvasRef.current.offsetLeft
+        let canvasY = e.clientY - canvasRef.current.offsetTop
+        context.lineTo(canvasX, canvasY);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(canvasX, canvasY)
+        setContext(context)
     }
     
     return (
-        <canvas class="canvas" ref={canvasRef} onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={draw}></canvas>
+        <canvas className="canvas" ref={canvasRef} width="150px" height="150px" onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={draw}></canvas>
     )
 }
