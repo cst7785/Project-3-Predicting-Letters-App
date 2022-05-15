@@ -8,45 +8,58 @@ export default function Canvas() {
     
     const canvasRef = useRef(null);
     const [context, setContext] = useState("")
+    const [canvas, setCanvas] = useState("")
     useEffect(()=>{
         const canvas = canvasRef.current;
+        setCanvas(canvas)
         const context = canvas.getContext('2d')
+        drawSettings(context);
         setContext(context);
     },[])
         
-    function drawSettings() {
-        context.lineWidth = 5;
-        context.lineCap = "round";
-        setContext(context)
+    function drawSettings(ctx) {
+        ctx.lineWidth = 5;
+        ctx.lineCap = "round";
     }
     function startDrawing(e) {
-        console.log("Start of drawing")
         drawing = true;
-        draw(e);    
+        //For some reason, this is needed to draw a point on click, errors if consolidated into same function
+        drawPoint(e)  
     }
     function stopDrawing() {
-        console.log("End of drawing")
         drawing = false;
         context.beginPath()
-        setContext(context)
     }
-    function draw(e) {
+    function clearDrawing() {
+        context.clearRect(0,0,canvas.offsetWidth, canvas.offsetHeight);
+    }
+    function drawPoint(e) {
         if (!drawing) return;
-        // console.log(e.clientX)
-        // console.log(window.innerWidth)
-        // console.log(canvasRef.current.offsetWidth)
-        // let canvasX = canvasRef.current.offsetWidth*e.clientX/window.innerWidth
-        // let canvasY = canvasRef.current.offsetHeight*e.clientY/window.innerHeight
-        let canvasX = e.clientX - canvasRef.current.offsetLeft
-        let canvasY = e.clientY - canvasRef.current.offsetTop
+        let canvasX = e.clientX - canvas.offsetLeft
+        let canvasY = e.clientY - canvas.offsetTop
+
+        context.beginPath();
+        context.moveTo(canvasX, canvasY)
+        context.lineTo(canvasX, canvasY);
+        context.stroke();
+    }
+    function drawLine(e) {
+        if (!drawing) return;
+        let canvasX = e.clientX - canvas.offsetLeft
+        let canvasY = e.clientY - canvas.offsetTop
+
         context.lineTo(canvasX, canvasY);
         context.stroke();
         context.beginPath();
         context.moveTo(canvasX, canvasY)
-        setContext(context)
     }
     
     return (
-        <canvas className="canvas" ref={canvasRef} width="150px" height="150px" onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={draw}></canvas>
-    )
-}
+        <>
+            <canvas className="canvas" ref={canvasRef} width="150px" height="150px" onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={drawLine}></canvas>
+            <br/>
+            <button onClick={clearDrawing}>Reset</button>
+            <button>Submit</button>
+        </>
+        )
+    }

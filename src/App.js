@@ -4,7 +4,7 @@ import Canvas from './components/Canvas';
 function App() {
   return (
     <div className="App">
-      <h1>Hello World</h1>
+      <h1>Hand Written Digit Prediction</h1>
       <Canvas />
     </div>
   );
