@@ -53,13 +53,21 @@ export default function Canvas() {
         context.beginPath();
         context.moveTo(canvasX, canvasY)
     }
-    
+    function _drawBoundingBox(coords){
+        context.strokeRect(coords[0],coords[2],coords[1]-coords[0],coords[3]-coords[2])
+    }
+    function handleClick() {
+        let rawCanvasData = context.getImageData(0,0,75,75).data
+        let formattedData = require('../scripts/formatCanvasData')(rawCanvasData)
+        _drawBoundingBox(formattedData)
+        console.log(formattedData);
+    }
     return (
         <>
-            <canvas className="canvas" ref={canvasRef} width="150px" height="150px" onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={drawLine}></canvas>
+            <canvas className="canvas" ref={canvasRef} width="75px" height="75px" onMouseDown={startDrawing} onMouseUp={stopDrawing} onMouseMove={drawLine}></canvas>
             <br/>
             <button onClick={clearDrawing}>Reset</button>
-            <button>Submit</button>
+            <button onClick={handleClick}>Submit</button>
         </>
         )
     }
