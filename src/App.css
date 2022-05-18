@@ -42,6 +42,11 @@
 /* My CSS Here */
 .canvas {
   border: 1px solid black;
-  /* height: 30vh;
-  width: 10vw; */
+  /* height: 150px;
+  width: 150px; */
+}
+.hidden {
+  position: absolute;
+  left: -500px;
+  top: -500px;
 }
